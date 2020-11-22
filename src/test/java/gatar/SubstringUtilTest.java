@@ -1,8 +1,10 @@
-package com.gatar;
+package gatar;
 
+import com.gatar.SubstringUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SubstringUtilTest {
     
