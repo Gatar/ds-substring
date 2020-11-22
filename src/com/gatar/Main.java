@@ -6,6 +6,10 @@ public class Main {
 
     private static final String RESULT_MESSAGE = "String second is substring of string first: ";
 
+    private static final String FIRST_STRING_MESSAGE = "Please type first string\n";
+
+    private static final String SECOND_STRING_MESSAGE = "Please type second string\n";
+
     public static void main(String[] args) {
         String stringOne;
         String stringTwo;
@@ -14,8 +18,8 @@ public class Main {
             stringOne = args[0];
             stringTwo = args[1];
         } else {
-            stringOne = readLine("Please type first string\n");
-            stringTwo = readLine("Please type second string\n");
+            stringOne = readLine(FIRST_STRING_MESSAGE);
+            stringTwo = readLine(SECOND_STRING_MESSAGE);
         }
 
         System.out.println(RESULT_MESSAGE + SubstringUtil.isSubstring(stringOne, stringTwo));

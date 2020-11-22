@@ -4,41 +4,46 @@ import java.util.*;
 
 public class SubstringUtil {
 
+    private static final char WILDCARD_CHAR = '*';
+
     private SubstringUtil() {
     }
 
     /**
      * Check if String s2 is substring of String s1. Asterisk '*' is a wildcard
      * (match zero or more characters) if not escaped '\*'.
-     * @param s1 String to be matched by s2
-     * @param s2 String to match in s1
+     * @param first String to be matched by s2
+     * @param second String to match in s1
      * @return true if s2 is substring of s1
      */
-    public static boolean isSubstring(String s1, String s2) {
+    public static boolean isSubstring(String first, String second) {
         boolean result = true;
 
-        if (isEmpty(s1) || isEmpty(s2)) {
+        if (isAnyEmpty(first, second)) {
             return false;
         }
 
-        if (!isEmpty(s1) && isOnlyAsterisk(s2)) {
+        if (!isAnyEmpty(first) && containsOnlyAsterisks(second)) {
             return true;
         }
 
-        List<String> elements = splitToFragments(s2);
-        int pointer = 0;
+        List<String> elements = splitToFragments(second);
+        int firstStringPointer = 0;
 
         for (String element : elements) {
             boolean fragmentResult = false;
-            char[] s2char = element.toCharArray();
-            List<Integer> firstSignPositions = signOccurrences(s1, s2char[0], pointer);
+            List<Integer> firstSignPositions = signOccurrences(first, element.charAt(0), firstStringPointer);
 
             for (int position : firstSignPositions) {
-                for (int c2 = 0; c2 < s2char.length; c2++) {
-                    if (s1.length() - 1 < (c2 + position) || s1.charAt(c2 + position) != s2char[c2]) break;
-                    if (c2 == s2char.length - 1) {
+                for (int elementIndex = 0; elementIndex < element.length(); elementIndex++) {
+                    int firstIndex = elementIndex + position;
+                    if (isIndexOutOfStringLength(first, firstIndex)
+                            || first.charAt(firstIndex) != element.charAt(elementIndex)){
+                        break;
+                    }
+                    if (isLastIndex(element, elementIndex)) {
                         fragmentResult = true;
-                        pointer = c2 + position;
+                        firstStringPointer = firstIndex;
                     }
                 }
                 if (fragmentResult) break;
@@ -52,55 +57,34 @@ public class SubstringUtil {
         return result;
     }
 
-    private static List<Integer> signOccurrences(String s, char c, int startingPosition) {
-        List<Integer> result = new ArrayList<>();
-        for (int c1 = startingPosition; c1 < s.length(); c1++) {
-            if(c == s.charAt(c1)) result.add(c1);
+    private static boolean isAnyEmpty(String...strings) {
+        for (String s : strings) {
+            if (Objects.isNull(s) || s.length() == 0) return true;
         }
-        return result;
+        return false;
     }
 
-    /**
-     * Strictly check (no wildcards allowed) if String s2 is substring of String s1.
-     * @param s1 String to be matched by s2
-     * @param s2 String to match in s1
-     * @return true if s2 is substring of s1
-     */
-    public static boolean isStrictSubstring(String s1, String s2) {
-        throw new UnsupportedOperationException();
-    }
-
-    private static boolean isEmpty(String s) {
-        return Objects.isNull(s) || s.length() == 0;
-    }
-
-    private static boolean isOnlyAsterisk(String s) {
-        return s.chars().filter(ch -> ch != '*').count() == 0;
-    }
-
-    private static boolean isAsterisk(char sign) {
-        return sign == '*';
-    }
-
-    private static boolean isEscapedAsterisk(char[] array, int index) {
-        return array.length > index + 1 && array[index] == '\\' && array[index+1] == '*';
+    private static boolean containsOnlyAsterisks(String s) {
+        return s.chars().filter(SubstringUtil::isAsterisk).count() == s.length();
     }
 
     private static List<String> splitToFragments(String string) {
         List<String> result = new LinkedList<>();
         char[] array = string.toCharArray();
         StringBuilder sb = new StringBuilder();
+
         for (int i = 0; i < array.length; i++) {
+            char currentSign = array[i];
             if(isEscapedAsterisk(array, i)) {
-                sb.append('*');
+                sb.append(WILDCARD_CHAR);
                 i++;
-            } else if (isAsterisk(array[i])){
+            } else if (isAsterisk(currentSign)){
                 if (sb.length() != 0) {
                     result.add(sb.toString());
                     sb.setLength(0);
                 }
             } else {
-                sb.append(array[i]);
+                sb.append(currentSign);
             }
         }
 
@@ -108,5 +92,29 @@ public class SubstringUtil {
             result.add(sb.toString());
         }
         return result;
+    }
+
+    private static boolean isAsterisk(int sign) {
+        return sign == WILDCARD_CHAR;
+    }
+
+    private static boolean isEscapedAsterisk(char[] array, int index) {
+        return array.length > index + 1 && array[index] == '\\' && array[index+1] == WILDCARD_CHAR;
+    }
+
+    private static List<Integer> signOccurrences(String string, char c, int startingPosition) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = startingPosition; i < string.length(); i++) {
+            if(c == string.charAt(i)) result.add(i);
+        }
+        return result;
+    }
+
+    private static boolean isIndexOutOfStringLength(String s, int index) {
+        return s.length() - 1 < index;
+    }
+
+    private static boolean isLastIndex(String s, int index) {
+        return index == s.length() - 1;
     }
 }

@@ -8,14 +8,14 @@ class SubstringUtilTest {
     
     //asterisk tests
     @Test
-    void asteriskSingleLetter() {
+    void asteriskSingleMiddleLetter() {
         String s1 = "sentence";
         String s2 = "sente*ce";
         assertTrue(SubstringUtil.isSubstring(s1, s2));
     }
 
     @Test
-    void asteriskSingleLetterIncorrect() {
+    void asteriskSingleMiddleLetterIncorrect() {
         String s1 = "sentence";
         String s2 = "senten*q";
         assertFalse(SubstringUtil.isSubstring(s1, s2));
@@ -98,11 +98,46 @@ class SubstringUtilTest {
         assertTrue(SubstringUtil.isSubstring(s1, s2));
     }
 
+    @Test
+    void escapedAndStandardAsteriskMultiple() {
+        String s1 = "asterisk*he*re";
+        String s2 = "t***sk\\*he\\*r*e*";
+        assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
     //non-asterisk tests
+    @Test
+    void nullBothStrings() {
+        String s1 = null;
+        String s2 = null;
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void nullFirstStrings() {
+        String s1 = null;
+        String s2 = "test";
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void nullSecondStrings() {
+        String s1 = "test";
+        String s2 = null;
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
     @Test
     void emptyBothStrings() {
         String s1 = "";
         String s2 = "";
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void emptyFirstString() {
+        String s1 = "";
+        String s2 = "test";
         assertFalse(SubstringUtil.isSubstring(s1, s2));
     }
 
@@ -135,28 +170,28 @@ class SubstringUtilTest {
     }
 
     @Test
-    void longerOccurOfSingeSign_secondOccurence() {
+    void longerOccurOfSingeSign_secondOccurrenceCorrect() {
         String s1 = "teeeeesteeeeeeeeeeeeeeeet";
         String s2 = "eeeeeeee";
         assertTrue(SubstringUtil.isSubstring(s1, s2));
     }
 
     @Test
-    void longerOccurOfSingeSign_secondOccurence_MissingSign() {
+    void longerOccurOfSingeSign_secondOccurrence_MissingSign() {
         String s1 = "teeeeesteeeeeeeeeeeeeeeet";
         String s2 = "etee";
         assertFalse(SubstringUtil.isSubstring(s1, s2));
     }
 
     @Test
-    void substringThreeSignsPrefix() {
+    void prefix() {
         String s1 = "test";
         String s2 = "tes";
         assertTrue(SubstringUtil.isSubstring(s1, s2));
     }
 
     @Test
-    void substringThreeSignsSuffix() {
+    void suffix() {
         String s1 = "test";
         String s2 = "est";
         assertTrue(SubstringUtil.isSubstring(s1, s2));
@@ -164,13 +199,41 @@ class SubstringUtilTest {
 
     @Test
     void singleLetter() {
-        String s1 = "test";
+        String s1 = "t";
+        String s2 = "t";
+        assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void singleLetterIncorrect() {
+        String s1 = "t";
+        String s2 = "q";
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void singleLetterPrefix() {
+        String s1 = "testing";
+        String s2 = "t";
+        assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void singleLetterSuffix() {
+        String s1 = "testing";
+        String s2 = "g";
+        assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void singleLetterInside() {
+        String s1 = "testing";
         String s2 = "s";
         assertTrue(SubstringUtil.isSubstring(s1, s2));
     }
 
     @Test
-    void notSubstringStrings() {
+    void differentStrings() {
         String s1 = "test";
         String s2 = "opal";
         assertFalse(SubstringUtil.isSubstring(s1, s2));
@@ -188,5 +251,33 @@ class SubstringUtilTest {
         String s1 = "#$%^&*%$@#";
         String s2 = "$@";
         assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void blankCharacters() {
+        String s1 = "dw#  \tq\n\r#";
+        String s2 = " \tq\n\r";
+        assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void blankCharactersIncorrect() {
+        String s1 = "dw#  \tq\n\r#";
+        String s2 = " \tq\r";
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void unicodeCharacters() {
+        String s1 = "თავისუფალი ენციკლოპედი";
+        String s2 = "იკლო";
+        assertTrue(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
+    void unicodeCharactersIncorrect() {
+        String s1 = "თავისუფალი ენციკლოპედი";
+        String s2 = "იკო";
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
     }
 }
