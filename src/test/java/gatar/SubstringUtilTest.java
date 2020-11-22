@@ -249,6 +249,13 @@ class SubstringUtilTest {
     }
 
     @Test
+    void reverseOrderOfFragments() {
+        String s1 = "testqwqwfala";
+        String s2 = "fala*test";
+        assertFalse(SubstringUtil.isSubstring(s1, s2));
+    }
+
+    @Test
     void specialCharacters() {
         String s1 = "#$%^&*%$@#";
         String s2 = "$@";
