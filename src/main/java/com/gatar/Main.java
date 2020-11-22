@@ -6,9 +6,9 @@ public class Main {
 
     private static final String RESULT_MESSAGE = "String second is substring of string first: ";
 
-    private static final String FIRST_STRING_MESSAGE = "Please type first string\n";
+    private static final String FIRST_STRING_MESSAGE = "Please type first string";
 
-    private static final String SECOND_STRING_MESSAGE = "Please type second string\n";
+    private static final String SECOND_STRING_MESSAGE = "Please type second string";
 
     public static void main(String[] args) {
         String stringOne;
